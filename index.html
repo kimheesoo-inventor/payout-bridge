@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="connect-src 'none'; font-src 'none'; object-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'; img-src data: blob:">
+<meta name="referrer" content="no-referrer">
+<title>Payout Bridge - see why a Shopify Payments payout differs from your orders</title>
+<style>
+  :root {
+    --bg: #fafaf8; --fg: #1c1c1c; --muted: #5a5a5a; --line: #d9d9d4; --card: #ffffff;
+    --accent: #1f5f8b; --warn-bg: #fff6e0; --warn-line: #e3b341; --bad: #a33a2a; --ok: #2d6a3e;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 16px; line-height: 1.5; color: var(--fg); background: var(--bg);
+    overflow-x: hidden; overflow-wrap: anywhere;
+  }
+  main { max-width: 1080px; margin: 0 auto; padding: 16px 14px 48px; }
+  h1 { font-size: 1.5rem; margin: 0 0 4px; }
+  h2 { font-size: 1.2rem; margin: 28px 0 8px; }
+  h3 { font-size: 1.05rem; margin: 0 0 8px; }
+  p { margin: 6px 0; }
+  .muted { color: var(--muted); font-size: 0.93rem; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; margin: 12px 0; }
+  .privacy { border-left: 4px solid var(--accent); }
+  .warn { background: var(--warn-bg); border: 1px solid var(--warn-line); border-radius: 8px; padding: 10px 12px; margin: 8px 0; }
+  .error { color: var(--bad); font-weight: 600; }
+  .ok { color: var(--ok); font-weight: 600; }
+  label.file { display: block; font-weight: 600; margin: 10px 0 4px; }
+  input[type=file] { display: block; width: 100%; max-width: 100%; font-size: 0.95rem; }
+  button {
+    font: inherit; padding: 10px 16px; border-radius: 8px; border: 1px solid var(--accent);
+    background: var(--accent); color: #fff; cursor: pointer; width: 100%; margin: 8px 0 0;
+  }
+  button.secondary { background: #fff; color: var(--accent); }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .map-row { display: block; margin: 8px 0; }
+  .map-row label { display: block; font-size: 0.93rem; font-weight: 600; }
+  .map-row select { display: block; width: 100%; max-width: 100%; font: inherit; padding: 6px; }
+  .req { color: var(--bad); }
+  .tag { display: inline-block; font-size: 0.8rem; padding: 0 6px; border-radius: 6px; border: 1px solid var(--line); color: var(--muted); margin-left: 4px; font-weight: 400; }
+  .table-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1px solid var(--line); border-radius: 8px; background: var(--card); }
+  table { border-collapse: collapse; width: 100%; min-width: 520px; font-size: 0.92rem; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; overflow-wrap: normal; }
+  th { background: #f0f0ec; white-space: nowrap; }
+  td.num, th.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  dl.sum { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; margin: 8px 0; }
+  dl.sum dt { color: var(--muted); }
+  dl.sum dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; }
+  dl.sum .total { font-weight: 700; color: var(--fg); border-top: 1px solid var(--line); padding-top: 2px; }
+  .explain { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.88rem; background: #f4f4f0; padding: 8px; border-radius: 6px; }
+  .grid2 { display: block; }
+  .empty { color: var(--muted); font-style: italic; }
+  footer { margin-top: 32px; font-size: 0.88rem; color: var(--muted); }
+  @media (min-width: 760px) {
+    main { padding: 24px 24px 64px; }
+    h1 { font-size: 1.9rem; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .map-row { display: grid; grid-template-columns: 220px 1fr; gap: 8px; align-items: center; }
+    button { width: auto; }
+    .payout-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 12px; }
+    .payout-cards .card { margin: 0; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Payout Bridge</h1>
+    <p>See why a Shopify Payments bank payout is different from your order totals, using two CSV exports.</p>
+  </header>
+
+  <section class="card privacy" aria-label="Privacy">
+    <p><strong>Runs only in this browser tab.</strong> Your files are read on this device and are not uploaded anywhere. Once the page has loaded, it makes no network calls, has no analytics and loads no outside scripts or fonts.</p>
+  </section>
+
+  <section aria-labelledby="step1">
+    <h2 id="step1">1. Choose your two CSV files</h2>
+    <div class="grid2">
+      <div class="card">
+        <label class="file" for="payoutFile">Payout transactions CSV</label>
+        <p class="muted">Shopify admin: Finance &gt; Payouts, open one payout (or View transactions), then Export. Shopify emails the CSV to you. One payout at a time is easiest to check against one bank deposit.</p>
+        <input type="file" id="payoutFile" accept=".csv,text/csv">
+        <p id="payoutInfo" class="muted"></p>
+      </div>
+      <div class="card">
+        <label class="file" for="ordersFile">Orders CSV</label>
+        <p class="muted">Shopify admin: Orders &gt; Export (choose CSV).</p>
+        <input type="file" id="ordersFile" accept=".csv,text/csv">
+        <p id="ordersInfo" class="muted"></p>
+      </div>
+    </div>
+    <button type="button" id="loadSample" class="secondary">Load sample data (synthetic example data)</button>
+    <p class="muted">The sample files are made up for this demo. They do not come from any real store.</p>
+  </section>
+
+  <section aria-labelledby="step2" id="mappingSection" hidden>
+    <h2 id="step2">2. Check the column mapping</h2>
+    <p class="muted">Column names can differ between stores and export versions. Each field below was guessed from the column titles. Please check every one and pick the right column if a guess is wrong. <span class="req">*</span> = needed.</p>
+    <div class="grid2">
+      <div class="card" id="payoutMapping"></div>
+      <div class="card" id="ordersMapping"></div>
+    </div>
+    <div id="mappingProblems"></div>
+    <button type="button" id="runBtn">Compare payouts and orders</button>
+  </section>
+
+  <section aria-labelledby="step3" id="resultsSection" hidden>
+    <h2 id="step3">3. Results</h2>
+    <div id="results"></div>
+    <button type="button" id="downloadBtn" class="secondary">Download results as CSV</button>
+  </section>
+
+  <section aria-labelledby="limits">
+    <h2 id="limits">Limits of this tool</h2>
+    <div class="card">
+      <ul>
+        <li>This is not accounting or tax advice. Check results against your own records.</li>
+        <li>It does not connect to Shopify or to a bank. It only reads the two files you choose.</li>
+        <li>Column names may differ by store, language or export version, so check the mapping in step 2.</li>
+        <li>Version 0 does not handle multiple currencies, or other payment providers such as PayPal or Amazon Pay.</li>
+        <li>Amounts must use a dot for decimals (for example 1,234.50). Formats like 1.234,50 are not read.</li>
+        <li>Orders are matched by order name (for example #1001). Payout lines without an order (such as adjustments) are counted in the payout totals but not matched.</li>
+        <li>Reserves, held funds and payouts split across currencies are not modelled.</li>
+        <li>If the payout file has no Payout ID column, lines are grouped by payout date. One payout date can include more than one payout, so one group may match more than one bank deposit.</li>
+      </ul>
+    </div>
+  </section>
+
+  <footer>
+    <p>Payout Bridge v0. Free and open source (MIT License). Copyright (c) 2026 Heesoo Kim. Provided as is, without warranty. Not affiliated with or endorsed by Shopify.</p>
+  </footer>
+</main>
+<script src="core.js"></script>
+<script src="samples.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

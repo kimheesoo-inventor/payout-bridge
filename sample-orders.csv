@@ -1,0 +1,10 @@
+Name,Email,Financial Status,Paid at,Fulfillment Status,Currency,Subtotal,Shipping,Taxes,Total,Discount Code,Refunded Amount,Lineitem quantity,Lineitem name,Lineitem price,Notes,Billing Name
+#1001,customer-a@example.com,partially_refunded,2026-01-03 10:12:00 -0500,fulfilled,USD,110.00,10.00,0.00,120.00,,40.00,1,Synthetic Product A,110.00,,Synthetic Customer A
+#1002,customer-b@example.com,paid,2026-01-03 14:30:00 -0500,fulfilled,USD,75.50,10.00,0.00,85.50,,0.00,1,Synthetic Product B,45.50,"Gift wrap, please
+leave at the door",Synthetic Customer B
+#1002,customer-b@example.com,,,,,,,,,,,1,Synthetic Strap,30.00,,
+#1003,customer-c@example.com,paid,2026-01-04 09:05:00 -0500,fulfilled,USD,"1,240.00",10.00,0.00,"1,250.00",SAMPLE10,0.00,10,Synthetic Product A (case of 10),124.00,,Synthetic Business C
+#1004,customer-d@example.com,paid,2026-01-05 10:59:00 -0500,fulfilled,USD,59.00,10.00,0.00,69.00,,0.00,1,Synthetic Product C,59.00,,Synthetic Customer D
+#1005,customer-e@example.com,paid,2026-01-05 12:45:00 -0500,unfulfilled,USD,20.00,10.00,0.00,30.00,,0.00,1,Synthetic Product D,20.00,,Synthetic Customer E
+#1006,customer-f@example.com,paid,2026-01-08 09:30:00 -0500,unfulfilled,USD,38.00,10.00,0.00,48.00,,0.00,1,Synthetic Product E,38.00,,Synthetic Customer F
+#1007,customer-g@example.com,pending,,unfulfilled,USD,15.00,10.00,0.00,25.00,,0.00,1,Synthetic Product F,15.00,,Synthetic Customer G
